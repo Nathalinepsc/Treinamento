@@ -1,0 +1,10 @@
+ROUTINE Exercicio7
+    /* 2 - Criar rotina (Exercicio7) que leia uma string representando seu nome completo e exiba:
+    2.1 – A quantidade de caracteres (sem contar os espaços);
+    2.2 – Seu nome completo trocando os espaços por “|” */
+Exercicio7(nome)
+    Read "Digite seu nome completo: ",!, nome,!
+    Write $LENGTH(nome), !
+    Write $LENGTH(nome) -( $LENGTH(nome, " ")-1)
+    Write $REPLACE(nome, " ","|" ), !
+

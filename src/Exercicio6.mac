@@ -1,0 +1,13 @@
+ROUTINE Exercicio6
+    /*1 - Criar rotina (Exercicio6) que leia uma string representando uma data em formato 
+    europeu (DD/MM/AAAA) e exiba:
+    1.1 – A data em formato $Horolog;
+    1.2 – A data em formato islâmico tabular (18);
+    1.3 – O nome do mês islâmico;*/
+Exercicio6
+
+    Set data = "03/01/1995"
+    Write $ZDATEH(data,4),!
+    Write $ZDATE($ZDATEH(data,4),18),!
+    Write $PIECE($ZDATE($ZDATEH(data,4),18), " ",2),!
+    

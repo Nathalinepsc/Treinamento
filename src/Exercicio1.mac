@@ -1,0 +1,17 @@
+ROUTINE Exercicio1
+    /* 1 - Criar uma rotina (Exercicio1) para exibir os números pares 
+    entre x e y (x e y são entradas fornecidas pelo usuário).*/
+
+Exercicio1(x,y)  
+
+   For a= x:1:y 
+    {
+        If a#2=0 
+        Write a_" Esse numero e par" ,!
+    }
+
+    /* 2 - Alterar a rotina do exercício anterior para contabilizar 
+    a quantidade de números pares divididos por 10, que tenham como 
+    valor de resto 0 (múltiplos de 10).*/
+
+    

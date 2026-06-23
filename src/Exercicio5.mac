@@ -1,0 +1,26 @@
+ROUTINE Exercicio5
+    /*6 - Criar rotina (Exercicio5) para cadastrar X alunos, a partir do número 
+    fornecido pelo usuário, os dados do aluno devem ser armazenados em uma global.*/
+
+Exercicio5
+    Read "Digite a quantidade de alunos para cadastro: ", quantidade,!
+
+    for x=1:1:quantidade
+    {
+        Write "Digite os dados do aluno "_x ,!
+        Read "Digite o Matricula do aluno: ", ^tAluno(x,"matricula") ,!
+        Read "Digite o Nome do aluno: ",^tAluno(x,"nome") ,!
+        Read "Digite o Telefone do aluno: ",^tAluno(x,"telefone") ,!
+        Read "Digite s Data de Nascimento do aluno:",^tAluno(x,"dataNasc") ,!
+        Read "Digite o Sexo (F/M):", ^tAluno(x,"sexo") ,!
+    }
+
+    for x=1:1:quantidade
+    {
+        Write "Dados do aluno "_x,!
+        Read "Matricula do aluno: ", ^tAluno(x,"matricula") ,!
+        Read "Nome do aluno: ",^tAluno(x,"nome") ,!
+        Read "Telefone do aluno: ",^tAluno(x,"telefone") ,!
+        Read "Data de Nascimento do aluno:",^tAluno(x,"dataNasc") ,!
+        Read "Sexo (F/M):", ^tAluno(x,"sexo") ,!,!
+    }

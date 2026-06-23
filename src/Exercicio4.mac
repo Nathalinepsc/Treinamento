@@ -1,0 +1,20 @@
+ROUTINE Exercicio4
+    /* 5 - Criar uma rotina (Exercicio4) para ler os dados cadastrais de um aluno.
+    Aluno: Matricula, Nome Completo, Telefone, Data de Nascimento e Sexo.*/
+
+Exercicio4(mat,nome,tel,dataNasc,sexo)
+
+    Read "Digite o Matricula:",mat,!
+    Read "Digite o Nome Completo:",nome,!
+    Read "Digite o Telefone:",tel,!
+    Read "Digite s Data de Nascimento:",dataNasc,!
+    Read "Digite o Sexo (Feminino ou Masculino):",sexo,!
+
+    Write "Digite o Matricula:",mat,!
+    Write "Digite o Nome Completo:",nome,!
+    Write "Digite o Telefone:",tel,!
+    Write "Digite s Data de Nascimento:",dataNasc,!
+    Write "Digite o Sexo (Feminino ou Masculino):",sexo,!
+
+
+

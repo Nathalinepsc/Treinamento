@@ -1,0 +1,7 @@
+ROUTINE InvokeRoutine
+InvokeRoutine
+    W "Invocando primeiro Exercicio"
+    // Teste
+    Do ^Exercicio1(2, 20)
+    DO ^Exercicio2(2, 20)
+    DO ^Exercicio3(258, 110, 90)
