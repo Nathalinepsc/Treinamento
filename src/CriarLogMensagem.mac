@@ -1,0 +1,54 @@
+ROUTINE CriarLogMensagem
+
+    /* 11 – Criar um método de classe CriarEntrada que recebe dois parâmetros Método e Classe para armazenar a entrada do log da aplicação.
+    12 – Criar um método de classe Finalizar que recebe como parâmetros IdLog, StatusProcesso, StatusCode para armazenar a fim do ciclo de vida do log da aplicação.
+    13 – Criar o método de classe ConsultaLog que recebe um Status, DataInicio, DataFim efetuando uma consulta por esse parâmetros.
+    14 – Criar o método de classe ConsultaLogPaginação que irá receber os parâmetros Status, LastId, PagSize, DataFim, com o objetivo de consultar por paginação.
+    15 – Criar o método de classe BuscarLogPorIdJSON que recebe o ID de um log, efetua a busca retorna um objeto dinâmico no formato JSON.
+    16 – Criar o método de classe ConsultaLogPaginacaoJSON que recebe os parâmetros Status, LastId, PageSize e DataFim, com o objetivo de retornar uma estrutura 
+    JSON paginada contendo os dados dos logs, o total de registros retornados e o identificador do próximo cursor (ProximoLastId).
+    */
+
+CriarLogMensagem
+    Set pDataInicio = ##class(%UTC).NowLocal()
+    Set pDataInicio = "24/06/2026 15:36:26"
+    Set pStatus = 1
+    Set pClasse = "LogMensagem"
+    Set pMetodo = "LogMetodo"
+    Set pStatusProcesso = "Processo realizado com sucesso!" 
+    Set pStatusCode = "1"
+    Set pLastId = 0
+    Set pPageSize = 10
+    Set DataFim = $ZDateTime($HOROLOG,4)
+    Set jsonArray = ##class(%DynamicArray).%New()
+    
+
+    Set logCriar = ##class(Treinamento.Data.LogMensagem).CriarEntrada(pMetodo,pClasse)
+    Set IdLog = logCriar.%Id()
+    Write "Log criado com sucesso! ID gerado: ", IdLog, !!, !
+
+    Set logFinalizar = ##class(Treinamento.Data.LogMensagem).Finalizar(IdLog,pStatusProcesso,pStatusCode)
+    Write "Log finalizado com sucesso!", !!, !
+    
+    Set objConsultaLog = ##class(Treinamento.Data.LogMensagem).ConsultaLog(pStatus)
+    For i=1:1:objConsultaLog.ListaLog.Count()
+    {
+        Set item = objConsultaLog.ListaLog.GetAt(i)
+        Write "Item: ", i, !
+        Write "Metodo ............: " , item.Metodo, !
+        Write "Classe ............: " , item.Classe, !
+        Write "Inicio ............: " , item.Inicio, !
+        Write "Fim ...............: " , item.Fim, !
+        Write "Status ............: " , item.Statua, !
+        Write "StatusProcesso ....: " , item.StatusProcesso, !
+    }
+
+    Set jsonLog = ##class(Treinamento.Data.LogMensagem).BuscarLogPorIdJSON(IdLog)
+    Do jsonLog.%ToJSON()
+    Write !!, !
+
+    Set jsonPaginado = ##class(Treinamento.Data.LogMensagem).ConsultaLogPaginacaoJSON(pStatus, pLastId, pPageSize, DataFim)
+    Do jsonPaginado.%ToJSON()
+    Write !
+
+    
