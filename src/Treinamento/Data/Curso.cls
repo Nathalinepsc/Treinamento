@@ -1,7 +1,7 @@
 Class Treinamento.Data.Curso Extends (%Persistent, %XML.Adaptor)
 {
-   Property Nome As %String(MAXLEN = 50) [SqlColumnNumber = 2];
-   Property Preco As %Decimal(SCALE = 2) [SqlColumnNumber = 3];
+   Property Nome As %String [SqlColumnNumber = 2];
+   Property Preco As %Integer [SqlColumnNumber = 3];
    Property Duracao As %Integer [SqlColumnNumber = 4];
   
 

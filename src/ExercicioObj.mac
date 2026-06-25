@@ -1,10 +1,64 @@
 ROUTINE ExercicioObj
+
+	/* 1 - Criar a classe Curso no pacote Treinamento.Data com as seguintes propriedades:
+	2 - Criar a classe Instrutor no pacote Treinamento.Data com as seguintes propriedades:
+	3 - Criar a classe Aluno no pacote Treinamento.Data com as seguintes propriedades:
+	4 - Criar a classe Turma no pacote Treinamento.Data com as seguintes propriedades:
+	5 – Criar um registro de Instrutor, três de Alunos e uma Turma, com Data de Início vazia e Status com valor “Incompleta”.
+	6 – Inserir no objeto Turma criado o Instrutor, os três alunos e gravar a Turma.
+	7 – Criar o método de instância VerificaStatus que recebe uma string com o nome do Curso e retorna o Status da turma.
+	8 – Criar o método de classe ImprimeTurma que irá exibir as informações de todos os alunos da turma a partir do recebimento no nome do Curso.*/
+
 ExercicioObj
 	Kill ^Treinamento.Data.CursoD
-	
+	Kill ^Treinamento.Data.InstrutorD
+	Kill ^Treinamento.Data.AlunoD
+	Kill ^Treinamento.Data.TurmaD
+
+	// Inserindo informações da turma
 	Set curso = ##class(Treinamento.Data.Curso).%New()
 	Set curso.Nome = "Obj Script"
 	Set curso.Duracao = 40
 	Set curso.Preco = 1.500
 	Set status = curso.%Save()
+	W "Salvando Curso" ,!
 	
+	// Inserindo informações do instrutor
+	Set instrutor = ##class(Treinamento.Data.Instrutor).%New()
+	Set instrutor.Nome = "Anderson"
+	Set instrutor.Matricula = 12345
+	Set status = instrutor.%Save()
+	W "Salvando Instrutor" ,!
+
+	// Inserindo informações dos Alunos
+	Set aluno1 = ##class(Treinamento.Data.Aluno).%New()
+	Set aluno1.Nome = "Nathaline Santos"
+	Set aluno1.Matricula = 00021
+	Set aluno1.Idade = 31
+	Set status = aluno1.%Save()
+	W "Salvando Aluno 1" ,!
+	Set aluno2 = ##class(Treinamento.Data.Aluno).%New()
+	Set aluno2.Nome = "Guilherme Conde"
+	Set aluno2.Matricula = 00022
+	Set aluno2.Idade = 35
+	Set status = aluno2.%Save()
+	W "Salvando Aluno 2" ,!
+	Set aluno3 = ##class(Treinamento.Data.Aluno).%New()
+	Set aluno3.Nome = "Teddy Santos"
+	Set aluno3.Matricula = 00023
+	Set aluno3.Idade = 12
+	Set status = aluno3.%Save()
+	W "Salvando Aluno 3" ,!
+
+	// Inserindo e replicando informações para Turma
+	Set turma = ##class(Treinamento.Data.Turma).%New()
+	Set turma.DataInicio = ""
+	Set turma.Status = "Incompleta"
+	Set turma.Curso = curso
+	Set turma.Instrutor = instrutor
+	Do turma.Alunos.Insert(aluno1)
+	Do turma.Alunos.Insert(aluno2)
+	Do turma.Alunos.Insert(aluno3)
+	Set status = turma.%Save()
+	W "Salvando Turma" ,!
+ 

@@ -1,9 +1,9 @@
 Class Treinamento.Data.Aluno Extends (%Persistent, %XML.Adaptor)
 {
-    Property Nome As %String(MAXLEN = 50)[SqlColumnNumber = 2];
+    Property Nome As %String [SqlColumnNumber = 2];
     Property Matricula As %String [SqlColumnNumber = 3];
-    Property Idade As %Integer [SqlColumnNumber = 4];
-   
+    Property Idade As %Integer [SqlColumnNumber = 4];   
+
 
 Storage Default
 {
