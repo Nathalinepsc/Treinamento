@@ -1,17 +1,11 @@
 Class Treinamento.VO.LogMensagem Extends (%SerialObject, %XML.Adaptor)
 {
     Property ID As %String;
-
     Property Metodo As %String;
-
     Property Classe As %String;
-
     Property Inicio As %String;
-
     Property Fim As %String;
-
     Property Status As %Boolean;
-
     Property StatusProcesso As %String;
     
 Storage Default

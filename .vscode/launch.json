@@ -13,6 +13,13 @@
             "type": "objectscript",
             "request": "attach",
             "name": "Attach to running process"
+        },
+        {
+            "type": "objectscript",
+            "request": "launch",
+            "name": "Debug CriarLogMensgem",
+            "program": "^CriarLogMensgem",
+            "system": true
         }
     ]
 }

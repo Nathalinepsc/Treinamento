@@ -18,9 +18,9 @@ Exercicio5
     for x=1:1:quantidade
     {
         Write "Dados do aluno "_x,!
-        Read "Matricula do aluno: ", ^tAluno(x,"matricula") ,!
-        Read "Nome do aluno: ",^tAluno(x,"nome") ,!
-        Read "Telefone do aluno: ",^tAluno(x,"telefone") ,!
-        Read "Data de Nascimento do aluno:",^tAluno(x,"dataNasc") ,!
-        Read "Sexo (F/M):", ^tAluno(x,"sexo") ,!,!
+        Write "Matricula do aluno: ", ^tAluno(x,"matricula") ,!
+        Write "Nome do aluno: ",^tAluno(x,"nome") ,!
+        Write "Telefone do aluno: ",^tAluno(x,"telefone") ,!
+        Write "Data de Nascimento do aluno:",^tAluno(x,"dataNasc") ,!
+        Write "Sexo (F/M):", ^tAluno(x,"sexo") ,!,!
     }

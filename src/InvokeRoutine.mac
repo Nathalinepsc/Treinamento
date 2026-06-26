@@ -4,4 +4,4 @@ InvokeRoutine
     // Teste
     Do ^Exercicio1(2, 20)
     DO ^Exercicio2(2, 20)
-    DO ^Exercicio3(258, 110, 90)
+    Do ^Exercicio3(110,258,300)

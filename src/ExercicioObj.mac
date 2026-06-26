@@ -19,7 +19,7 @@ ExercicioObj
 	Set curso = ##class(Treinamento.Data.Curso).%New()
 	Set curso.Nome = "Obj Script"
 	Set curso.Duracao = 40
-	Set curso.Preco = 1.500
+	Set curso.Preco = 1500
 	Set status = curso.%Save()
 	W "Salvando Curso" ,!
 	
@@ -33,19 +33,19 @@ ExercicioObj
 	// Inserindo informações dos Alunos
 	Set aluno1 = ##class(Treinamento.Data.Aluno).%New()
 	Set aluno1.Nome = "Nathaline Santos"
-	Set aluno1.Matricula = 00021
+	Set aluno1.Matricula = "00021"
 	Set aluno1.Idade = 31
 	Set status = aluno1.%Save()
 	W "Salvando Aluno 1" ,!
 	Set aluno2 = ##class(Treinamento.Data.Aluno).%New()
 	Set aluno2.Nome = "Guilherme Conde"
-	Set aluno2.Matricula = 00022
+	Set aluno2.Matricula = "00022"
 	Set aluno2.Idade = 35
 	Set status = aluno2.%Save()
 	W "Salvando Aluno 2" ,!
 	Set aluno3 = ##class(Treinamento.Data.Aluno).%New()
 	Set aluno3.Nome = "Teddy Santos"
-	Set aluno3.Matricula = 00023
+	Set aluno3.Matricula = "00023"
 	Set aluno3.Idade = 12
 	Set status = aluno3.%Save()
 	W "Salvando Aluno 3" ,!

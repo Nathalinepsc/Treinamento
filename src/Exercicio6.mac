@@ -5,6 +5,7 @@ ROUTINE Exercicio6
     1.2 – A data em formato islâmico tabular (18);
     1.3 – O nome do mês islâmico;*/
 Exercicio6
+    Kill ^tAluno
 
     Set data = "03/01/1995"
     Write $ZDATEH(data,4),!
