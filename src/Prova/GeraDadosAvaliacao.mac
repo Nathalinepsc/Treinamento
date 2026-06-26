@@ -1,0 +1,62 @@
+ROUTINE GeraDadosAvaliacao
+GeraDadosAvaliacao
+    Kill ^Prova.Data.AvaliacaoD
+    Kill ^Prova.Data.AvaliacaoI
+
+    #Include %occStatus
+
+    Set NomeDisciplina(1) = "Algoritmo"
+    Set NomeDisciplina(2) = "Infra"
+    Set NomeDisciplina(3) = "Java"
+
+    Set Tipo(1)           = "Teorica"
+    Set Tipo(2)           = "Teorica"
+    Set Tipo(3)           = "Pratica"
+
+    Set Nota(1,1)         = 5
+    Set Nota(1,2)         = 10
+    Set Nota(1,3)         = 7
+
+    Set Nota(2,1)         = 7
+    Set Nota(2,2)         = 3
+    Set Nota(2,3)         = 9
+
+    Set Nota(3,1)         = 2
+    Set Nota(3,2)         = 6
+    Set Nota(3,3)         = 4
+    
+    Set Nota(4,1)         = 10
+    Set Nota(4,2)         = 8
+    Set Nota(4,3)         = 1
+
+    For disciplina=1:1:3
+    {
+        For candidato=1:1:4
+        {
+            Set candidatoObj = ##class(Prova.Data.Candidato).%OpenId(candidato)
+
+            If '$IsObject(candidatoObj)
+            {
+                Write "Candidato "_candidato_" não encontrado.",!
+                Continue
+            }
+
+            Set obj = ##class(Prova.Data.Avaliacao).%New()
+
+            Set obj.CodigoCandidato = candidatoObj
+            Set obj.NomeDisciplina  = NomeDisciplina(disciplina)
+            Set obj.Tipo            = Tipo(disciplina)
+            Set obj.Nota            = Nota(candidato,disciplina)
+
+            Set sc = obj.%Save()
+
+            If '$$$ISOK(sc)
+            {
+                Do $System.Status.DisplayError(sc)
+                Quit
+            }
+        }
+    }
+
+    Write !, "Avaliações cadastradas com sucesso!", !
+    Quit
