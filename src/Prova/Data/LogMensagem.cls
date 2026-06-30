@@ -2,172 +2,186 @@ Class Prova.Data.LogMensagem Extends (%Persistent, %XML.Adaptor)
 {
     Property Metodo As %String(MAXLEN="") [SqlColumnNumber = 2];
     Property Classe As %String(MAXLEN="") [SqlColumnNumber = 3];
-    Property Inicio As %String [ SqlColumnNumber = 4];
-    Property Fim As %String [ SqlColumnNumber = 5 ];
-    Property Status As %Boolean [ SqlColumnNumber = 6 ];
-    Property StatusProcesso As %String [ SqlColumnNumber = 7 ];
-    Property Listalog As list of Prova.VO.LogMensagem;
+    Property Inicio As %String [SqlColumnNumber = 4];
+    Property Fim As %String [SqlColumnNumber = 5];
+    Property Status As %String [SqlColumnNumber = 6];
+    Property StatusProcesso As %String [SqlColumnNumber = 7];
+    Property ListaLog As list of Prova.VO.LogMensagem [SqlColumnNumber = 8];
 
-    ClassMethod CriarEntrada(pMetodo As %String, pClasse As %String, pStatusCode As %String) As Prova.Data.LogMensagem
+    ClassMethod CriarEntrada(pMetodo As %String, pClasse As %String, pStatusCode As %String = "0") As Prova.Data.LogMensagem
     {
-        Set tSC = $$$OK 
-        try
-        {
-            Set classe               = ..%ClassName()
-            Set name                 =   $ZNAME
-            #Dim exception           As %Exception.General    = ""
-            #Dim statuCode           As %Status               = $SYSTEM.Status.OK()
-            #Dim entry               As LogMensagem           = ..%New()
-            
+        Set entry                   = ..%New()
+        Set entry.Metodo            = pMetodo
+        Set entry.Classe            = pClasse
+        Set entry.Inicio            = $ZDATETIME($HOROLOG, 4)
+        Set entry.Status            = pStatusCode
+        Set entry.StatusProcesso    = ""
+        Set sc                      = entry.%Save()
 
-            Set entry.Metodo         = pMetodo
-            Set entry.Classe         = pClasse
-            Set entry.Inicio         = $ZDATETIME($HOROLOG,4)
-            set entry.Status         = pStatusCode
-            SET statusCode           = entry.%Save()
+        If $$$ISERR(sc)
+        {
+            Throw ##class(%Exception.General).%New("Erro ao criar o registro de log")
         }
-        catch(exception) 
-        {
-            Set tSC                  = exception.AsStatus() 
-            Set errorMensagem        = $SYSTEM.Status.GetOneErrorText(tSC)
-            Throw exception
-        }   
 
-        return entry
-
+        Return entry
     }
 
     ClassMethod Finalizar(pIdLog As %Integer, pStatusProcesso As %String, pStatusCode As %String) As Prova.Data.LogMensagem
     {
-        Set tSC = $$$OK 
+        Set entry = ..%OpenId(pIdLog)
 
-        try
+        If '$IsObject(entry)
         {
-            #Dim exception           As %Exception.General    = ""
-            #Dim statuCode           As %Status               = $SYSTEM.Status.OK()
-            #Dim entry               As LogMensagem           = ..%OpenId(pIdLog)
-            
-            Set entry.Fim            = $ZDATETIME($HOROLOG,4)
-            Set entry.StatusProcesso = pStatusProcesso        
-            set entry.Status         = pStatusCode
-            SET statusCode           = entry.%Save()
+            Throw ##class(%Exception.General).%New("Log não encontrado")
         }
 
-        catch(exception) 
-        {
-            Set tSC                  = exception.AsStatus() 
-            Set errorMensagem        = $SYSTEM.Status.GetOneErrorText(tSC)
-            Throw exception
-        }   
+        Set entry.Fim               = $ZDATETIME($HOROLOG, 4)
+        Set entry.StatusProcesso    = pStatusProcesso
+        Set entry.Status            = pStatusCode
+        Set sc                      = entry.%Save()
 
-        return entry
-    }
-
-    ClassMethod ConsultaLog(pStatus As %Boolean) As Prova.VO.LogMensagem
-    {
-        #Dim StatusCode              As %Status               = $SYSTEM.Status.OK()
-        #Dim exception               As %Exception.General    = ""
-        #Dim SQL                     As %String
-        #Dim resultSet               As %ResultSet 
-        #Dim entry                   AS LogMensagem           = ..%New()
-    
-        try
+        If $$$ISERR(sc)
         {
-            Set SQL = "SELECT * FROM Prova_Data.LogMensagem WHERE Status =  "_pStatus
-            Set resultSet = ##class(%ResultSet).%New()
-            Set statusCode = resultSet.Prepare(SQL)
-            set statusCode = resultSet.Execute()
-            if $System.Status.Error(statusCode) return statusCode
-        
-            While (resultSet.Next())
-            {
-                Set pItem = ##class(Prova.VO.LogMensagem).%New()
-                Set pItem.Metodo          = resultSet.%Get("Metodo")     
-                Set pItem.Classe          = resultSet.%Get("Classe")
-                Set pItem.Inicio          = resultSet.%Get("Inicio")     
-                Set pItem.Fim             = resultSet.%Get("Fim")
-                Set pItem.Status          = resultSet.%Get("Status")     
-                Set pItem.StatusProcesso  = resultSet.%Get("StatusProcesso")
-                Do entry.ListaLog.Insert(pItem)
-            }
-        }
-        catch(exception) 
-        {
-            Set tSC  = exception.AsStatus() 
-            Set errorMensagem = $SYSTEM.Status.GetOneErrorText(tSC)
-            Throw exception
-        }   
-        return entry   
-    }
-
-    ClassMethod ConsultaLogPaginacao(pStatus As %Boolean, pLastId As %Integer, pPageSize As %Integer, pDataFim As %String) As Prova.VO.LogMensagem
-    {
-        Try 
-        {   
-            Set tSC = $$$OK      
-            #Dim entry               AS LogMensagem           = ..%New()            
-            Set SQL = "SELECT TOP "_pPageSize_" ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso  FROM Prova_Data.LogMensagem "
-            Set SQL = SQL_"WHERE Status = "_pStatus 
-            
-            If (pLastId > 0) 
-            {
-                Set SQL = SQL_" AND ID > "_pLastId
-            }
-            
-            If (pDataFim '= "") 
-            {
-                Set SQL = SQL_" AND Fim <= '"_pDataFim_"'"
-            }
-            
-            Set SQL = SQL_" ORDER BY ID ASC"
-            
-            Set resultSet = ##class(%ResultSet).%New()
-            Do resultSet.Prepare(SQL)
-            Set tSC = resultSet.Execute()
-                    
-            While (resultSet.Next())
-            {
-                Set pItem = ##class(Prova.VO.LogMensagem).%New()
-                
-                Set pItem.Metodo         = resultSet.%Get("Metodo")     
-                Set pItem.Classe         = resultSet.%Get("Classe")
-                Set pItem.Inicio         = resultSet.%Get("Inicio")     
-                Set pItem.Fim            = resultSet.%Get("Fim")
-                Set pItem.Status         = resultSet.%Get("Status")     
-                Set pItem.StatusProcesso = resultSet.%Get("StatusProcesso")       
-            
-                Do entry.ListaLog.Insert(pItem)
-            }
-            
-            Set totalPagina = entry.ListaLog.Count()
-            If (totalPagina > 0) 
-            {
-                Write "Total de logs encontrados por página: ", totalPagina, ! 
-            } 
-            Else 
-            {
-                Write "Nenhum log encontrado para essa pesquisa.", !
-            }
+            Throw ##class(%Exception.General).%New("Erro ao finalizar o registro de log")
         }
 
-        Catch (exception)
-        {
-            Set tSC = exception.AsStatus()
-            Set erroMensagem = $SYSTEM.Status.GetOneErrorText(tSC)
-            Throw exception
-        }
-        
         Return entry
+    }
+
+    ClassMethod ConsultaLog(pStatus As %String, pDataInicio As %String, pDataFim As %String) As %DynamicObject
+    {
+        Set resultado   = ##class(%DynamicObject).%New()
+        Set logs        = ##class(%DynamicArray).%New()
+
+        Try
+        {
+            Set sql = "SELECT ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso FROM Prova_Data.LogMensagem WHERE 1=1"
+
+            If (pStatus '= "")
+            {
+                Set sql = sql _ " AND Status = '" _ pStatus _ "'"
+            }
+
+            If (pDataInicio '= "")
+            {
+                Set sql = sql _ " AND Inicio >= '" _ pDataInicio _ "'"
+            }
+
+            If (pDataFim '= "")
+            {
+                Set sql = sql _ " AND Fim <= '" _ pDataFim _ "'"
+            }
+
+            Set sql     = sql _ " ORDER BY ID ASC"
+
+            Set stmt    = ##class(%SQL.Statement).%New()
+            Set sc      = stmt.%Prepare(sql)
+            If $$$ISERR(sc)
+            {
+                Set resultado.Erro = $System.Status.GetErrorText(sc)
+                Return resultado
+            }
+
+            Set rset = stmt.%Execute()
+
+            While rset.%Next()
+            {
+                Set jsonItem                = ##class(%DynamicObject).%New()
+                Set jsonItem.ID             = rset.%Get("ID")
+                Set jsonItem.Metodo         = rset.%Get("Metodo")
+                Set jsonItem.Classe         = rset.%Get("Classe")
+                Set jsonItem.Inicio         = rset.%Get("Inicio")
+                Set jsonItem.Fim            = rset.%Get("Fim")
+                Set jsonItem.Status         = rset.%Get("Status")
+                Set jsonItem.StatusProcesso = rset.%Get("StatusProcesso")
+                Do logs.%Push(jsonItem)
+            }
+
+            Set resultado.Logs              = logs
+            Set resultado.TotalRegistros    = logs.%Size()
+        }
+        Catch ex
+        {
+            Set resultado.Erro = "Erro ao consultar log: " _ ex.AsSystemError()
+        }
+
+        Return resultado
+    }
+
+    ClassMethod ConsultaLogPaginacaoJSON(pStatus As %String, pLastId As %Integer, pPageSize As %Integer, pDataFim As %String) As %DynamicObject
+    {
+        Set jsonResultado   = ##class(%DynamicObject).%New()
+        Set jsonArray       = ##class(%DynamicArray).%New()
+
+        Try
+        {
+            Set sql = "SELECT TOP " _ pPageSize _ " ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso FROM Prova_Data.LogMensagem WHERE 1=1"
+
+            If (pStatus '= "")
+            {
+                Set sql = sql _ " AND Status = '" _ pStatus _ "'"
+            }
+
+            If (pLastId > 0)
+            {
+                Set sql = sql _ " AND ID > " _ pLastId
+            }
+
+            If (pDataFim '= "")
+            {
+                Set sql = sql _ " AND Fim <= '" _ pDataFim _ "'"
+            }
+
+            Set sql     = sql _ " ORDER BY ID ASC"
+
+            Set stmt    = ##class(%SQL.Statement).%New()
+            Set sc      = stmt.%Prepare(sql)
+            If $$$ISERR(sc)
+            {
+                Set jsonResultado.Erro = $System.Status.GetErrorText(sc)
+                Return jsonResultado
+            }
+
+            Set rset                = stmt.%Execute()
+            Set ultimoIdProcessado  = pLastId
+
+            While rset.%Next()
+            {
+                Set jsonItem                    = ##class(%DynamicObject).%New()
+                Set ultimoIdProcessado          = rset.%Get("ID")
+
+                Set jsonItem.ID                 = ultimoIdProcessado
+                Set jsonItem.Metodo             = rset.%Get("Metodo")
+                Set jsonItem.Classe             = rset.%Get("Classe")
+                Set jsonItem.Inicio             = rset.%Get("Inicio")
+                Set jsonItem.Fim                = rset.%Get("Fim")
+                Set jsonItem.Status             = rset.%Get("Status")
+                Set jsonItem.StatusProcesso     = rset.%Get("StatusProcesso")
+
+                Do jsonArray.%Push(jsonItem)
+            }
+
+            Set jsonResultado.TotalRegistros    = jsonArray.%Size()
+            Set jsonResultado.ProximoLastId     = ultimoIdProcessado
+            Set jsonResultado.Logs              = jsonArray
+        }
+        Catch ex
+        {
+            Set jsonResultado.Erro = "Falha na paginação: " _ ex.AsSystemError()
+        }
+
+        Return jsonResultado
     }
 
     ClassMethod BuscarLogPorIdJSON(pId As %Integer) As %DynamicObject
     {
-        Set jsonResponse = ##class(%DynamicObject).%New()    
-        Try 
+        Set jsonResponse = ##class(%DynamicObject).%New()
+
+        Try
         {
-            #Dim log As Prova.Data.LogMensagem = ##class(Prova.Data.LogMensagem).%OpenId(pId)
-            
-            I $ISOBJECT(log)
+            Set log = ##class(Prova.Data.LogMensagem).%OpenId(pId)
+
+            If $IsObject(log)
             {
                 Set jsonResponse.ID             = pId
                 Set jsonResponse.Metodo         = log.Metodo
@@ -175,70 +189,15 @@ Class Prova.Data.LogMensagem Extends (%Persistent, %XML.Adaptor)
                 Set jsonResponse.Inicio         = log.Inicio
                 Set jsonResponse.Fim            = log.Fim
                 Set jsonResponse.Status         = log.Status
-                Set jsonResponse.Status         = log.Status
                 Set jsonResponse.StatusProcesso = log.StatusProcesso
             }
         }
-
-        Catch (exception) 
+        Catch ex
         {
-            Set jsonResponse.Erro = "Erro interno ao processar a busca: " _ exception.AsSystemError()
+            Set jsonResponse.Erro = "Erro interno ao processar a busca: " _ ex.AsSystemError()
         }
 
         Return jsonResponse
-    }
-
-    ClassMethod ConsultaLogPaginacaoJSON(pStatus As %Boolean, pLastId As %Integer, pPageSize As %Integer, pDataFim As %String) As %DynamicObject
-    {
-        Set jsonResultado = ##class(%DynamicObject).%New()    
-
-        Set jsonArray = ##class(%DynamicArray).%New()   
-        Try 
-        {   
-            Set tSC = $$$OK
-            Set ultimoIdProcessado = pLastId        
-            
-            Set SQL = "SELECT TOP "_pPageSize_" ID, Metodo, Classe, Inicio, Fim, Status, StatusProcesso FROM Prova_Data.LogMensagem "
-            Set SQL = SQL_"WHERE Status = "_pStatus 
-            
-            If (pLastId > 0) { Set SQL = SQL_" AND ID > "_pLastId }
-            If (pDataFim '= "") { Set SQL = SQL_" AND Fim <= '"_pDataFim_"'" }
-            
-            Set SQL = SQL_" ORDER BY ID ASC"
-            
-            Set resultSet = ##class(%ResultSet).%New()
-            Do resultSet.Prepare(SQL)
-            Set tSC = resultSet.Execute()
-            
-        
-            While (resultSet.Next())
-            {
-                Set jsonItem = ##class(%DynamicObject).%New()
-                
-                
-                Set ultimoIdProcessado = resultSet.%Get("ID")
-                
-                Set jsonItem.ID             = ultimoIdProcessado
-                Set jsonItem.Metodo         = resultSet.%Get("Metodo")     
-                Set jsonItem.Classe         = resultSet.%Get("Classe")
-                Set jsonItem.Inicio         = resultSet.%Get("Inicio")     
-                Set jsonItem.Fim            = resultSet.%Get("Fim")
-                Set jsonItem.Status         = resultSet.%Get("Status")     
-                Set jsonItem.StatusProcesso = resultSet.%Get("StatusProcesso")
-                Do jsonArray.%Push(jsonItem)
-            }       
-        
-            Set jsonResultado.TotalPagina = jsonArray.%Size()
-            Set jsonResultado.ProximoLastId = ultimoIdProcessado
-            Set jsonResultado.Logs = jsonArray
-        }
-        Catch (exception)
-        {
-            Set jsonResultado.Erro = "Falha na paginação: " _ exception.AsSystemError()
-        }
-        
-        
-        Return jsonResultado
     }
 
 Storage Default
@@ -266,7 +225,7 @@ Storage Default
 <Value>StatusProcesso</Value>
 </Value>
 <Value name="8">
-<Value>Listalog</Value>
+<Value>ListaLog</Value>
 </Value>
 </Data>
 <DataLocation>^Prova.Data.LogMensagemD</DataLocation>

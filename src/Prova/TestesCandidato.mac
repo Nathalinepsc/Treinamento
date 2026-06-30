@@ -1,0 +1,85 @@
+ROUTINE TestesCandidato
+TestesCandidato
+
+    #Include %occStatus
+
+    Set candidato = ##class(Prova.Data.Candidato).%OpenId(1)
+    If '$IsObject(candidato)
+    {
+        Write "Candidato não encontrado",!
+        Quit
+    }
+
+    Set curso = ##class(Prova.Data.Curso).%OpenId(1)
+    If '$IsObject(curso)
+    {
+        Write "Curso não encontrado",!
+        Quit
+    }
+
+    Set inscricao                   = ##class(Prova.Data.CandidatoCurso).%New()
+    Set inscricao.Candidato         = candidato
+    Set inscricao.Curso             = curso
+    Set inscricao.DataInscricao     = +$H
+    Set sc                          = inscricao.%Save()
+
+    If '$$$ISOK(sc)
+    {
+        Do $System.Status.DisplayError(sc)
+        Quit
+    }
+
+   
+    Do ##class(Prova.Data.Candidato).ConsultaCandidato(candidato.%Id())
+    Do ##class(Prova.Data.Candidato).AnalisaNome(candidato.Nome _ " da Silva")
+    Do ##class(Prova.Data.Candidato).AnalisaDataNascimento("1996-08-20")
+
+    Set json = ##class(Prova.Data.Candidato).BuscarCandidatoPorIdJSON(candidato.%Id())
+    Write json.%ToJSON(), !
+
+    Set pagina = ##class(Prova.Data.Candidato).ConsultaCandidatoPaginacaoJSON("", 0, 10, "")
+    Write pagina.%ToJSON(), !
+
+    If '$IsObject(candidato)
+    {
+        Write "Candidato não encontrado",!
+        Quit
+    }
+
+    If '$IsObject(curso)
+    {
+        Write "Curso não encontrado",!
+        Quit
+    }
+
+    Write candidato.VerificaAprovacao(), !
+
+    Set iterAvaliacoes = candidato.Avaliacoes.GetIterator()
+    While iterAvaliacoes.%GetNext(.key, .value)
+    {
+        If $IsObject(value)
+        {
+            Write "  Avaliacao -> Candidato: ", value.CodigoCandidato.Nome, !
+        }
+    }
+
+    Set iterInscricoes = candidato.Inscricoes.GetIterator()
+    While iterInscricoes.%GetNext(.key, .value)
+    {
+        If $IsObject(value)
+        {
+            Write "  Candidato -> Curso: ", value.Curso.Nome, !
+        }
+    }
+
+    Set iterCursos = curso.Inscricoes.GetIterator()
+    While iterCursos.%GetNext(.key, .value)
+    {
+        If $IsObject(value)
+        {
+            Write "  Curso -> Candidato: ", value.Candidato.Nome, !
+        }
+    }
+
+    Write !, "Validação concluída com sucesso!", !
+    Quit

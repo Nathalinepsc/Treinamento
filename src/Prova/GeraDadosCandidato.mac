@@ -5,22 +5,22 @@ GeraDadosCandidato
 
     #Include %occStatus
 
-    Set Nome(1)      = "Leonardo"
-    Set Nome(2)      = "Rodrigo"
-    Set Nome(3)      = "Amanda"
-    Set Nome(4)      = "Claudia"
+    Set Nome(1)     = "Leonardo"
+    Set Nome(2)     = "Rodrigo"
+    Set Nome(3)     = "Amanda"
+    Set Nome(4)     = "Claudia"
 
-    Set Idade(1)     = 25
-    Set Idade(2)     = 43
-    Set Idade(3)     = 34
-    Set Idade(4)     = 27
+    Set Idade(1)    = 25
+    Set Idade(2)    = 43
+    Set Idade(3)    = 34
+    Set Idade(4)    = 27
 
-    Set Sexo(1)      = "M"
-    Set Sexo(2)      = "M"
-    Set Sexo(3)      = "F"
-    Set Sexo(4)      = "F"
+    Set Sexo(1)     = "M"
+    Set Sexo(2)     = "M"
+    Set Sexo(3)     = "F"
+    Set Sexo(4)     = "F"
 
-    For i=1:1:4 
+    For i = 1:1:4
     {
         Set obj                 = ##class(Prova.Data.Candidato).%New()
         Set obj.CodigoCandidato = i
@@ -28,8 +28,8 @@ GeraDadosCandidato
         Set obj.Idade           = Idade(i)
         Set obj.Sexo            = Sexo(i)
 
-        Set sc = obj.%Save()
-        If '$$$ISOK(sc) 
+        Set sc                  = obj.%Save()
+        If '$$$ISOK(sc)
         {
             Do $System.Status.DisplayError(sc)
             Quit

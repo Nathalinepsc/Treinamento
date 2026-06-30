@@ -6,50 +6,6 @@ Class Prova.Data.Avaliacao Extends (%Persistent, %XML.Adaptor)
 
     Relationship CodigoCandidato As Prova.Data.Candidato [ Cardinality = one, Inverse = Avaliacoes ];
 
-    ClassMethod ConsultaCandidato(CodigoCandidato As Avaliacao) As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    
-    Method VerificaAprovacao() As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    ClassMethod AnalisaNome() As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    ClassMethod AnalisaDataNascimento() As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    ClassMethod BuscarCandidatoPorIdJSON(CodigoCandidato) As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    ClassMethod ConsultaCandidatoPaginacaoJSON(NomeCandidato, LastId, PageSize, Sexo) As %Status
-    {
-        Set sc = $$$OK
-        // do something
-        Return sc
-    }
-
-    
 Storage Default
 {
 <Data name="AvaliacaoDefaultData">

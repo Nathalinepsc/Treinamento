@@ -1,0 +1,74 @@
+ROUTINE GeraDadosCurso
+GeraDadosCurso
+    Kill ^Prova.Data.CursoD
+    Kill ^Prova.Data.CursoI
+
+    Kill ^Prova.Data.CandidatoCursoD
+    Kill ^Prova.Data.CandidatoCursoI
+
+    #Include %occStatus
+
+    Set NomeCurso(1)      = "Algoritmo"
+    Set NomeCurso(2)      = "Infra"
+    Set NomeCurso(3)      = "Java"
+
+    Set Descricao(1)      = "Introdução à lógica e estruturas de dados"
+    Set Descricao(2)      = "Redes, servidores e infraestrutura de TI"
+    Set Descricao(3)      = "Programação orientada a objetos em Java"
+
+    Set CodigoCurso(1)    = 101
+    Set CodigoCurso(2)    = 102
+    Set CodigoCurso(3)    = 103
+
+    For i=1:1:3 {
+        Set curso             = ##class(Prova.Data.Curso).%New()
+        Set curso.Nome        = NomeCurso(i)
+        Set curso.Descricao   = Descricao(i)
+        Set curso.CodigoCurso = CodigoCurso(i)
+
+        Set sc                = curso.%Save()
+        If '$$$ISOK(sc) {
+            Do $System.Status.DisplayError(sc)
+            Quit
+        }
+    }
+
+    Set CursoInscritos(1)  = "1,2"
+    Set CursoInscritos(2)  = "2,3"
+    Set CursoInscritos(3)  = "3,4"
+
+    For cursoId=1:1:3 {
+        Set cursoObj = ##class(Prova.Data.Curso).%OpenId(cursoId)
+        If '$IsObject(cursoObj) {
+            Write "Curso com ID "_cursoId_" não encontrado.", !
+            Quit
+        }
+
+        Set candidatos = CursoInscritos(cursoId)
+        For idx=1:1:$Length(candidatos,",") 
+        {
+            Set candidatoId = $Piece(candidatos,",",idx)
+            Set candidatoObj = ##class(Prova.Data.Candidato).%OpenId(candidatoId)
+
+            If '$IsObject(candidatoObj) 
+            {
+                Write "Candidato com ID "_candidatoId_" não encontrado. Gere candidatos antes de executar esta rotina.", !
+                Continue
+            }
+
+            Set inscricao               = ##class(Prova.Data.CandidatoCurso).%New()
+            Set inscricao.Candidato     = candidatoObj
+            Set inscricao.Curso         = cursoObj
+            Set inscricao.DataInscricao = +$H + cursoId - 1
+
+            Set sc                      = inscricao.%Save()
+            If '$$$ISOK(sc) 
+            {
+                Do $System.Status.DisplayError(sc)
+                Quit
+            }
+        }
+    }
+
+    Write !, "Cursos e inscrições de candidatos cadastrados com sucesso!", !
+    Quit

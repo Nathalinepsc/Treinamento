@@ -5,7 +5,7 @@ Class Prova.VO.AvaliacaoVO Extends (%SerialObject, %XML.Adaptor)
     Property NomeDisciplina As %String;
     Property Tipo As %String;
     Property Nota As %Integer;
-    Property Resultado As %Boolean;
+    Property Resultado As %String;
 
 Storage Default
 {
