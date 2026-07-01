@@ -1,23 +1,29 @@
-ROUTINE CriarLogMensagem
-CriarLogMensagem
+ROUTINE CriarLogMensagemProva
+CriarLogMensagemProva
 
-    Set pDataInicio = ##class(%UTC).NowLocal()
-    Set pStatus = ""
-    Set pClasse = "LogMensagem"
-    Set pMetodo = "LogMetodo"
+    Set pDataInicio     = ##class(%UTC).NowLocal()
+    Set pStatus         = ""
+    Set pClasse         = "LogMensagem"
+    Set pMetodo         = "LogMetodo"
     Set pStatusProcesso = "Processo realizado com sucesso!"
-    Set pStatusCode = "1"
-    Set pPageSize = 10
-    Set DataFim = $ZDateTime($HOROLOG, 4)
-    Set pLastId = 0
-    Set jsonArray = ##class(%DynamicArray).%New()
+    Set pStatusCode     = "1"
+    Set pPageSize       = 10
+    Set DataFim         = $ZDateTime($HOROLOG, 4)
+    Set pLastId         = 0
+    Set jsonArray       = ##class(%DynamicArray).%New()
 
     Set logCriar = ##class(Prova.Data.LogMensagem).CriarEntrada(pMetodo, pClasse, "0")
     Set IdLog = logCriar.%Id()
-    Write "Log criado com sucesso! ID gerado: ", IdLog, !!, !
+    W "Log criado com sucesso! ID gerado: ", IdLog, !!, !
 
     Set logFinalizar = ##class(Prova.Data.LogMensagem).Finalizar(IdLog, pStatusProcesso, pStatusCode)
-    Write "Log finalizado com sucesso!", !!, !
+    W "Log finalizado com sucesso!", !!, !
+
+    Set jsonLogUnico = ##class(Prova.Data.LogMensagem).BuscarLogPorIdJSON(IdLog)
+    W "jsonLogUnico: ", jsonLogUnico.%ToJSON(), !!
+
+    Set jsonPaginado = ##class(Prova.Data.LogMensagem).ConsultaLogPaginacaoJSON(pStatus, pLastId, pPageSize, DataFim)
+    W "jsonPaginado: ", jsonPaginado.%ToJSON(), !!
 
     Set objConsultaLog = ##class(Prova.Data.LogMensagem).ConsultaLog(pStatus, pDataInicio, DataFim)
     Set totalLogs = objConsultaLog.Logs.%Size()
@@ -26,35 +32,28 @@ CriarLogMensagem
     {
         Set item = objConsultaLog.Logs.%Get(i - 1)
 
-        Set jsonItem = ##class(%DynamicObject).%New()
-        Set jsonItem.Metodo = item.Metodo
-        Set jsonItem.Classe = item.Classe
-        Set jsonItem.Inicio = item.Inicio
-        Set jsonItem.Fim = item.Fim
-        Set jsonItem.Status = item.Status
+        Set jsonItem                = ##class(%DynamicObject).%New()
+        Set jsonItem.Metodo         = item.Metodo
+        Set jsonItem.Classe         = item.Classe
+        Set jsonItem.Inicio         = item.Inicio
+        Set jsonItem.Fim            = item.Fim
+        Set jsonItem.Status         = item.Status
         Set jsonItem.StatusProcesso = item.StatusProcesso
         Do jsonArray.%Push(jsonItem)
     }
-
-    Write !, "Retorno do Json : ", !
-    Write jsonArray.%ToJSON(), !!
+    W "Retorno do Json : ", jsonArray.%ToJSON(), !!
 
     For i = 1:1:totalLogs
     {
         Set item = objConsultaLog.Logs.%Get(i - 1)
-        Write "Item: ", i, !
-        Write "Metodo ............: ", item.Metodo, !
-        Write "Classe ............: ", item.Classe, !
-        Write "Inicio ............: ", item.Inicio, !
-        Write "Fim ...............: ", item.Fim, !
-        Write "Status ............: ", item.Status, !
-        Write "StatusProcesso ....: ", item.StatusProcesso, !
+        W "Item: ", i, !
+        W "Metodo ............: ", item.Metodo, !
+        W "Classe ............: ", item.Classe, !
+        W "Inicio ............: ", item.Inicio, !
+        W "Fim ...............: ", item.Fim, !
+        W "Status ............: ", item.Status, !
+        W "StatusProcesso ....: ", item.StatusProcesso, !
     }
 
-    Set jsonLogUnico = ##class(Prova.Data.LogMensagem).BuscarLogPorIdJSON(IdLog)
-    Write !, "=== [JSON] LOG ÚNICO CRIADO ===", !
-    Write jsonLogUnico.%ToJSON(), !!
-
-    Set jsonPaginado = ##class(Prova.Data.LogMensagem).ConsultaLogPaginacaoJSON(pStatus, pLastId, pPageSize, DataFim)
-    Write "=== [JSON] CONSULTA PAGINADA ===", !
-    Write jsonPaginado.%ToJSON(), !!
+    W "Total de Logs encontrados: ", totalLogs, !!
+    Quit

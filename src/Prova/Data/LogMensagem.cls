@@ -8,7 +8,7 @@ Class Prova.Data.LogMensagem Extends (%Persistent, %XML.Adaptor)
     Property StatusProcesso As %String [SqlColumnNumber = 7];
     Property ListaLog As list of Prova.VO.LogMensagem [SqlColumnNumber = 8];
 
-    ClassMethod CriarEntrada(pMetodo As %String, pClasse As %String, pStatusCode As %String = "0") As Prova.Data.LogMensagem
+    ClassMethod CriarEntrada(pMetodo As %String, pClasse As %String, pStatusCode As %String) As Prova.Data.LogMensagem
     {
         Set entry                   = ..%New()
         Set entry.Metodo            = pMetodo
